@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Корзина</h1>
+{% if list_of_books == None %}
+<div class="col-md6 border rounded">
+<h2>В корзине пока нет товаров.</h2>
+</div>
+{% else %}
+    {% for item in books%}
+    {% if item.id in list_of_books %}
+    <div class="col-md6 border rounded">
+        <h2>{{item.title}}</h2>
+        <div>
+            {{item.description}}
+        </div>
+        <div>
+            Автор - {{item.author.name}}
+        </div>
+    {% endif %}
+    {% endfor %}
+{% endif %}
+</div>
+{% endblock %}

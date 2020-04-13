@@ -16,7 +16,7 @@
         <a class="navbar-brand" href="">Авторы</a>
         {% if current_user.is_authenticated %}
         <p>
-            <a class="btn btn-warning" href="">{{ current_user.name }}</a>
+            <a class="btn btn-warning" href="/shopping_cart">{{ current_user.name }}</a>
             <a class="btn btn-success" href="/logout">Выйти</a>
         </p>
 

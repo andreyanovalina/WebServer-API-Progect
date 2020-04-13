@@ -12,7 +12,7 @@
         <div>
             Автор - {{item.author.name}}
         </div>
-            {% if current_user.is_authenticated and current_user %}
+            {% if current_user.is_authenticated %}
         <div>
             <a class="btn btn-danger" href="">В корзину - {{item.price}}р.</a>
 <!--            <a href="/news_delete/{{ item.id }}" class="btn btn-danger">Удалить</a>-->

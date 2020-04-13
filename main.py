@@ -20,6 +20,17 @@ def main():
     app.run()
 
 
+@app.route('/shopping_cart')
+def shopping_cart():
+    session = db_session.create_session()
+    user = session.query(User).first()
+    list_of_books = user.shopping_cart
+    # list_of_books = list_of_books.split()
+    # list_of_books = [int(el) for el in list_of_books]
+    books = session.query(Books)
+    return render_template('shopping_cart.html', list_of_books=list_of_books, books=books)
+
+
 @app.route('/logout')
 @login_required
 def logout():

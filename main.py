@@ -3,6 +3,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from data import db_session
 from data.users import User
 from data.books import Books
+from data.author import Author
 from registerform import RegisterForm
 from loginform import LoginForm
 from flask_restful import abort, Api
@@ -18,6 +19,30 @@ login_manager.init_app(app)
 def main():
     db_session.global_init("db/shop.sqlite")
     app.run()
+
+
+@app.route('/books/<int:id>')
+def show_books():
+
+
+
+@app.route('/list_of_authors')
+def list_of_authors():
+    session = db_session.create_session()
+    author = session.query(Author)
+    return render_template("list_of_authors.html", author=author)
+
+
+@app.route('/add_books/<int:id>')
+def add_books(id):
+    session = db_session.create_session()
+    books = session.query(Books).filter(Books.id == id).first()
+    books.count -= 1
+    users = session.query(User).filter(User.id == current_user.id).first()
+    users.shopping_cart.append(id)
+    session.commit()
+    books = session.query(Books)
+    return render_template("main_page.html", books=books)
 
 
 @app.route('/shopping_cart')

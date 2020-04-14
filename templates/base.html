@@ -13,7 +13,7 @@
 <header>
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="/">Интернет-магазин книг</a>
-        <a class="navbar-brand" href="">Авторы</a>
+        <a class="navbar-brand" href="/list_of_authors">Авторы</a>
         {% if current_user.is_authenticated %}
         <p>
             <a class="btn btn-warning" href="/shopping_cart">{{ current_user.name }}</a>

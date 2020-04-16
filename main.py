@@ -21,9 +21,36 @@ def main():
     app.run()
 
 
-@app.route('/books/<int:id>')
-def show_books():
+@app.route('/delete_books/<int:id>')
+def delete_books(id):
+    session = db_session.create_session()
+    book = session.query(Books).filter(Books.id == id).first()
+    book.count += 1
+    user = session.query(User).filter(User.id == current_user.id).first()
+    list_of_books = user.shopping_cart
+    user.shopping_cart = ''
+    list_of_books = list_of_books.split(',')
+    list_of_books = [int(el) for el in list_of_books]
+    del list_of_books[list_of_books.index(id)]
+    if list_of_books != []:
+        user.shopping_cart += str(list_of_books[0])
+        for elem in list_of_books[1:]:
+            user.shopping_cart += ',' + str(elem)
+    else:
+        user.shopping_cart = 0
+        list_of_books = [0]
+    session.commit()
+    books = session.query(Books)
+    return render_template('shopping_cart.html', list_of_books=list_of_books, books=books)
 
+
+@app.route('/books/<int:id>')
+def show_books(id):
+    session = db_session.create_session()
+    books = session.query(Books).filter(Books.author_id == id)
+    author = session.query(Author).filter(Author.id == id).first()
+    author = author.name
+    return render_template("books.html", author=author, books=books)
 
 
 @app.route('/list_of_authors')
@@ -37,12 +64,19 @@ def list_of_authors():
 def add_books(id):
     session = db_session.create_session()
     books = session.query(Books).filter(Books.id == id).first()
+    author_id = books.author_id
     books.count -= 1
     users = session.query(User).filter(User.id == current_user.id).first()
-    users.shopping_cart.append(id)
+    if users.shopping_cart != 0:
+        users.shopping_cart += ',' + str(id)
+    else:
+        users.shopping_cart = ''
+        users.shopping_cart += str(id)
     session.commit()
-    books = session.query(Books)
-    return render_template("main_page.html", books=books)
+    books = session.query(Books).filter(Books.author_id == author_id)
+    author = session.query(Author).filter(Author.id == author_id).first()
+    author = author.name
+    return render_template("books.html", books=books, author=author)
 
 
 @app.route('/shopping_cart')
@@ -50,8 +84,8 @@ def shopping_cart():
     session = db_session.create_session()
     user = session.query(User).first()
     list_of_books = user.shopping_cart
-    # list_of_books = list_of_books.split()
-    # list_of_books = [int(el) for el in list_of_books]
+    list_of_books = list_of_books.split(',')
+    list_of_books = [int(el) for el in list_of_books]
     books = session.query(Books)
     return render_template('shopping_cart.html', list_of_books=list_of_books, books=books)
 
@@ -87,12 +121,7 @@ def load_user(user_id):
 @app.route("/")
 def main_page():
     session = db_session.create_session()
-    # if current_user.is_authenticated:
-    #     news = session.query(News).filter(
-    #         (News.user == current_user) | (News.is_private != True))
-    # else:
-    books = session.query(Books)
-    return render_template("main_page.html", books=books)
+    return render_template("base.html")
 
 
 @app.route('/register', methods=['GET', 'POST'])

@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Корзина</h1>
-{% if list_of_books == None %}
+{% if list_of_books == [0] %}
 <div class="col-md6 border rounded">
 <h2>В корзине пока нет товаров.</h2>
 </div>
@@ -16,6 +16,12 @@
         </div>
         <div>
             Автор - {{item.author.name}}
+        </div>
+        <div>
+            Цена - {{item.price}}р.
+        </div>
+        <div>
+            <a class="btn btn-secondary" href="/delete_books/{{ item.id }}">Удалить</a>
         </div>
     {% endif %}
     {% endfor %}

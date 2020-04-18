@@ -29,8 +29,18 @@
     </nav>
 </header>
 <main role="main" class="container">
-    {{ text }}
-    {% block content %}{% endblock %}
+    {% block content %}
+    <h1>{{ text }}</h1>
+    <img src='/static/img/main1.jpg' width="500" height="500">
+    {% if current_user.id == 1 %}
+    <nav class="navbar navbar-light bg-light">
+    <p>
+        <a class="btn btn-info " href="/add_author">Добавить автора</a>
+        <a class="btn btn-primary" href="/add_book_to_author">Добавить книгу</a>
+    </p>
+    </nav>
+    {% endif %}
+    {% endblock %}
 </main>
 </body>
 </html>

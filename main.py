@@ -5,6 +5,8 @@ from data.users import User
 from data.books import Books
 from data.author import Author
 from registerform import RegisterForm
+from add_authorform import Add_authorForm
+from add_book_to_authorform import Add_book_to_authorForm
 from loginform import LoginForm
 from flask_restful import abort, Api
 
@@ -18,6 +20,47 @@ login_manager.init_app(app)
 def main():
     db_session.global_init("db/shop.sqlite")
     app.run()
+
+
+@app.route('/add_book_to_author', methods=['GET', 'POST'])
+def add_book_to_author():
+    form = Add_book_to_authorForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        author = session.query(Author).filter(Author.name == form.name.data).first()
+        if session.query(Books).filter(Books.title == form.title.data).first():
+            return render_template('add_book_to_author.html', title='Добавление книги автору',
+                                   form=form,
+                                   message="У этого автора уже есть данная книга")
+        books = Books(
+            title=form.title.data,
+            description=form.description.data,
+            price=form.price.data,
+            count=100,
+            author_id=author.id
+        )
+        session.add(books)
+        session.commit()
+        return redirect('/')
+    return render_template('add_book_to_author.html', title='Добавление книги автору', form=form)
+
+
+@app.route('/add_author', methods=['GET', 'POST'])
+def add_author():
+    form = Add_authorForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        if session.query(Author).filter(Author.name == form.name.data).first():
+            return render_template('add_author.html', title='Добавление автора',
+                                   form=form,
+                                   message="Такой автор уже есть")
+        author = Author(
+            name=form.name.data
+        )
+        session.add(author)
+        session.commit()
+        return redirect('/')
+    return render_template('add_author.html', title='Добавление автора', form=form)
 
 
 @app.route('/buy')
@@ -141,7 +184,7 @@ def load_user(user_id):
 @app.route("/")
 def main_page():
     session = db_session.create_session()
-    return render_template("base.html")
+    return render_template("base.html", text='Добро пожаловать!')
 
 
 @app.route('/register', methods=['GET', 'POST'])

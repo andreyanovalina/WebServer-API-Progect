@@ -27,7 +27,7 @@ def buy():
     user.shopping_cart = '0'
     session.commit()
     return render_template('base.html',
-                           text='Ваш заказ отправлен в обработку. Мы сообщим вам о состоянии заказа по СМС.'
+                           text='Ваш заказ отправлен в обработку. Мы сообщим вам о состоянии заказа по СМС. '
                                 'Спасибо, что выбрали наш магазин!')
 
 
@@ -159,7 +159,8 @@ def reqister():
                                    message="Такой пользователь уже есть")
         user = User(
             name=form.name.data,
-            phone=form.phone.data
+            phone=form.phone.data,
+            shopping_cart='0'
         )
         user.set_password(form.password.data)
         session.add(user)

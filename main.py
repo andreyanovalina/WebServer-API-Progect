@@ -8,7 +8,6 @@ from registerform import RegisterForm
 from loginform import LoginForm
 from flask_restful import abort, Api
 
-
 app = Flask(__name__)
 api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -19,6 +18,17 @@ login_manager.init_app(app)
 def main():
     db_session.global_init("db/shop.sqlite")
     app.run()
+
+
+@app.route('/buy')
+def buy():
+    session = db_session.create_session()
+    user = session.query(User).filter(User.id == current_user.id).first()
+    user.shopping_cart = '0'
+    session.commit()
+    return render_template('base.html',
+                           text='Ваш заказ отправлен в обработку. Мы сообщим вам о состоянии заказа по СМС.'
+                                'Спасибо, что выбрали наш магазин!')
 
 
 @app.route('/delete_books/<int:id>')
@@ -40,6 +50,11 @@ def delete_books(id):
         user.shopping_cart = 0
         list_of_books = [0]
     session.commit()
+    count = 0
+    if user.shopping_cart != '0':
+        for id in list_of_books:
+            books = session.query(Books).filter(Books.id == id).first()
+            count += books.price
     books = session.query(Books)
     return render_template('shopping_cart.html', list_of_books=list_of_books, books=books)
 
@@ -67,7 +82,7 @@ def add_books(id):
     author_id = books.author_id
     books.count -= 1
     users = session.query(User).filter(User.id == current_user.id).first()
-    if users.shopping_cart != 0:
+    if users.shopping_cart != '0':
         users.shopping_cart += ',' + str(id)
     else:
         users.shopping_cart = ''
@@ -86,8 +101,13 @@ def shopping_cart():
     list_of_books = user.shopping_cart
     list_of_books = list_of_books.split(',')
     list_of_books = [int(el) for el in list_of_books]
+    count = 0
+    if user.shopping_cart != '0':
+        for id in list_of_books:
+            books = session.query(Books).filter(Books.id == id).first()
+            count += books.price
     books = session.query(Books)
-    return render_template('shopping_cart.html', list_of_books=list_of_books, books=books)
+    return render_template('shopping_cart.html', list_of_books=list_of_books, books=books, count=count)
 
 
 @app.route('/logout')
@@ -146,7 +166,6 @@ def reqister():
         session.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
-
 
 
 if __name__ == '__main__':

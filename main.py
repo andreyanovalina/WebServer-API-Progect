@@ -56,7 +56,7 @@ def delete_books(id):
             books = session.query(Books).filter(Books.id == id).first()
             count += books.price
     books = session.query(Books)
-    return render_template('shopping_cart.html', list_of_books=list_of_books, books=books)
+    return render_template('shopping_cart.html', list_of_books=list_of_books, books=books, count=count)
 
 
 @app.route('/books/<int:id>')
@@ -97,7 +97,7 @@ def add_books(id):
 @app.route('/shopping_cart')
 def shopping_cart():
     session = db_session.create_session()
-    user = session.query(User).first()
+    user = session.query(User).filter(User.id == current_user.id).first()
     list_of_books = user.shopping_cart
     list_of_books = list_of_books.split(',')
     list_of_books = [int(el) for el in list_of_books]

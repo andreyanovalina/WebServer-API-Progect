@@ -9,6 +9,7 @@ from add_authorform import Add_authorForm
 from add_book_to_authorform import Add_book_to_authorForm
 from loginform import LoginForm
 from flask_restful import abort, Api
+import books_resources
 
 app = Flask(__name__)
 api = Api(app)
@@ -16,13 +17,33 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+api.add_resource(books_resources.BooksListResource, '/api/books')
+api.add_resource(books_resources.BooksResource, '/api/books/<int:books_id>')
+
 
 def main():
     db_session.global_init("db/shop.sqlite")
     app.run()
 
 
+@app.route('/delete_book_from_db/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_book_from_db(id):
+    session = db_session.create_session()
+    book = session.query(Books).filter(Books.id == id).first()
+    if book:
+        session.delete(book)
+        session.commit()
+    else:
+        abort(404)
+    books = session.query(Books).filter(Books.author_id == book.author_id)
+    author = session.query(Author).filter(Author.id == book.author_id).first()
+    author = author.name
+    return render_template("books.html", books=books, author=author)
+
+
 @app.route('/add_book_to_author', methods=['GET', 'POST'])
+@login_required
 def add_book_to_author():
     form = Add_book_to_authorForm()
     if form.validate_on_submit():
@@ -46,6 +67,7 @@ def add_book_to_author():
 
 
 @app.route('/add_author', methods=['GET', 'POST'])
+@login_required
 def add_author():
     form = Add_authorForm()
     if form.validate_on_submit():
@@ -183,7 +205,6 @@ def load_user(user_id):
 
 @app.route("/")
 def main_page():
-    session = db_session.create_session()
     return render_template("base.html", text='Добро пожаловать!')
 
 

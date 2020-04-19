@@ -3,6 +3,11 @@
 {% block content %}
 <h1>Выберите автора, книги которого хотели бы купить:</h1>
 {% for item in author %}
+<p>
 <a class="btn btn-light" href="/books/{{ item.id }}">{{ item.name }}</a>
+{% if current_user.id == 1 %}
+<a class="btn btn-dark" href="">Удалить.</a>
+{% endif %}
+</p>
 {% endfor %}
 {% endblock %}

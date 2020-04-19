@@ -12,6 +12,9 @@
             {% if current_user.is_authenticated %}
         <div>
             <a class="btn btn-danger" href="/add_books/{{ item.id }}">В корзину - {{item.price}}р.</a>
+            {% if current_user.id == 1 %}
+            <a class="btn btn-dark" href="/delete_book_from_db/{{ item.id }}">Удалить</a>
+            {% endif %}
         </div>
             {% endif %}
     </div>

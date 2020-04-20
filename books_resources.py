@@ -1,4 +1,4 @@
-from parser_of_arguments import parser
+from parser_of_arguments_for_books import parser
 from flask import jsonify
 from flask_restful import abort, Resource
 from data import db_session

@@ -10,6 +10,7 @@ from add_book_to_authorform import Add_book_to_authorForm
 from loginform import LoginForm
 from flask_restful import abort, Api
 import books_resources
+import authors_resources
 
 app = Flask(__name__)
 api = Api(app)
@@ -19,6 +20,9 @@ login_manager.init_app(app)
 
 api.add_resource(books_resources.BooksListResource, '/api/books')
 api.add_resource(books_resources.BooksResource, '/api/books/<int:books_id>')
+
+api.add_resource(authors_resources.AuthorListResource, '/api/authors')
+api.add_resource(authors_resources.AuthorResource, '/api/authors/<int:author_id>')
 
 
 def main():

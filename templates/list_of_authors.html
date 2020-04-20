@@ -6,7 +6,7 @@
 <p>
 <a class="btn btn-light" href="/books/{{ item.id }}">{{ item.name }}</a>
 {% if current_user.id == 1 %}
-<a class="btn btn-dark" href="">Удалить.</a>
+<a class="btn btn-dark" href="/delete_author_from_db/{{ item.id }}">Удалить.</a>
 {% endif %}
 </p>
 {% endfor %}

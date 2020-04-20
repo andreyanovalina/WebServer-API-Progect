@@ -30,6 +30,27 @@ def main():
     app.run()
 
 
+@app.route('/delete_author_from_db/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_author_from_db(id):
+    session = db_session.create_session()
+    book = session.query(Books).filter(Books.author_id == id)
+    for elem in book:
+        if elem:
+            session.delete(elem)
+            session.commit()
+        else:
+            abort(404)
+    author = session.query(Author).filter(Author.id == id).first()
+    if author:
+        session.delete(author)
+        session.commit()
+    else:
+        abort(404)
+    author = session.query(Author)
+    return render_template("list_of_authors.html", author=author)
+
+
 @app.route('/delete_book_from_db/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_book_from_db(id):

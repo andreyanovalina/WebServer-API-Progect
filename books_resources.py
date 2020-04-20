@@ -9,7 +9,7 @@ def abort_if_books_not_found(books_id):
     session = db_session.create_session()
     books = session.query(Books).get(books_id)
     if not books:
-        abort(404, message=f"Books {books_id} not found")
+        abort(404, message=f"Book {books_id} not found")
 
 
 class BooksResource(Resource):
@@ -17,7 +17,7 @@ class BooksResource(Resource):
         abort_if_books_not_found(books_id)
         session = db_session.create_session()
         books = session.query(Books).get(books_id)
-        return jsonify({'books': books.to_dict()})
+        return jsonify({'books': books.to_dict(only=['title', 'price'])})
 
     def delete(self, books_id):
         abort_if_books_not_found(books_id)
@@ -32,7 +32,7 @@ class BooksListResource(Resource):
     def get(self):
         session = db_session.create_session()
         books = session.query(Books).all()
-        return jsonify({'books': [item.to_dict() for item in books]})
+        return jsonify({'books': [item.to_dict(only=['title', 'price']) for item in books]})
 
     def post(self):
         args = parser.parse_args()

@@ -17,7 +17,7 @@ class AuthorResource(Resource):
         abort_if_author_not_found(author_id)
         session = db_session.create_session()
         author = session.query(Author).get(author_id)
-        return jsonify({'author': author.to_dict()})
+        return jsonify({'author': author.to_dict(only=['name'])})
 
     def delete(self, author_id):
         abort_if_author_not_found(author_id)
@@ -32,7 +32,7 @@ class AuthorListResource(Resource):
     def get(self):
         session = db_session.create_session()
         author = session.query(Author).all()
-        return jsonify({'author': [item.to_dict() for item in author]})
+        return jsonify({'author': [item.to_dict(only=['name']) for item in author]})
 
     def post(self):
         args = parser.parse_args()

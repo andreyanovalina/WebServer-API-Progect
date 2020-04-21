@@ -20,12 +20,12 @@
             <a class="btn btn-success" href="/logout">Выйти</a>
         </p>
 
-{% else %}
-    <p>
-        <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
-        <a class="btn btn-success" href="/login">Войти</a>
-    </p>
-{% endif %}
+        {% else %}
+        <p>
+            <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
+            <a class="btn btn-success" href="/login">Войти</a>
+        </p>
+        {% endif %}
     </nav>
 </header>
 <main role="main" class="container">
@@ -34,10 +34,10 @@
     <img src='/static/img/main1.jpg' width="500" height="500">
     {% if current_user.id == 1 %}
     <nav class="navbar navbar-light bg-light">
-    <p>
-        <a class="btn btn-info " href="/add_author">Добавить автора</a>
-        <a class="btn btn-primary" href="/add_book_to_author">Добавить книгу</a>
-    </p>
+        <p>
+            <a class="btn btn-info " href="/add_author">Добавить автора</a>
+            <a class="btn btn-primary" href="/add_book_to_author">Добавить книгу</a>
+        </p>
     </nav>
     {% endif %}
     {% endblock %}
